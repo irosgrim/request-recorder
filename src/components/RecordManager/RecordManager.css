@@ -1,0 +1,236 @@
+.recorder-devtools-minimized {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background-color: #1f2937;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    z-index: 9999;
+  }
+  
+  .recorder-devtools-minimized button {
+    font-size: 0.875rem;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .recorder-devtools {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background-color: #1f2937;
+    color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    max-width: 24rem;
+    min-width: 20rem;
+    z-index: 9999;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  
+  .recorder-devtools-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .recorder-devtools-title {
+    font-size: 1.125rem;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .recorder-devtools-minimize {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 1.25rem;
+    padding: 0.25rem;
+    transition: color 0.2s;
+  }
+  
+  .recorder-devtools-minimize:hover {
+    color: white;
+  }
+  
+  .recorder-devtools-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .recorder-devtools-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .recorder-devtools-label {
+    font-size: 0.875rem;
+    color: #d1d5db;
+  }
+  
+  .recorder-devtools-mode {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  
+  .recorder-devtools-mode.record {
+    background-color: #dc2626;
+  }
+  
+  .recorder-devtools-mode.fake {
+    background-color: #16a34a;
+  }
+  
+  .recorder-devtools-mode.real {
+    background-color: #4b5563;
+  }
+  
+  .recorder-devtools-count {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .recorder-devtools-button-group {
+    display: grid;
+    gap: 0.5rem;
+  }
+  
+  .recorder-devtools-button-group.three-columns {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .recorder-devtools-button-group.two-columns {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .recorder-devtools-button {
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+  
+  .recorder-devtools-button.default {
+    background-color: #4b5563;
+  }
+  
+  .recorder-devtools-button.default:hover {
+    background-color: #374151;
+  }
+  
+  .recorder-devtools-button.active-record {
+    background-color: #dc2626;
+  }
+  
+  .recorder-devtools-button.active-record:hover {
+    background-color: #b91c1c;
+  }
+  
+  .recorder-devtools-button.active-fake {
+    background-color: #16a34a;
+  }
+  
+  .recorder-devtools-button.active-fake:hover {
+    background-color: #15803d;
+  }
+  
+  .recorder-devtools-button.active-real {
+    background-color: #2563eb;
+  }
+  
+  .recorder-devtools-button.active-real:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .recorder-devtools-button.full-width {
+    width: 100%;
+  }
+  
+  .recorder-devtools-file-label {
+    padding: 0.25rem 0.75rem;
+    background-color: #4b5563;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+  
+  .recorder-devtools-file-label:hover {
+    background-color: #374151;
+  }
+  
+  .recorder-devtools-file-input {
+    display: none;
+  }
+  
+  .recorder-devtools-endpoints {
+    max-height: 8rem;
+    overflow-y: auto;
+    background-color: #374151;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+  }
+  
+  .recorder-devtools-endpoint {
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0.125rem 0;
+    color: #e5e7eb;
+  }
+  
+  .recorder-devtools-endpoints::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .recorder-devtools-endpoints::-webkit-scrollbar-track {
+    background: #1f2937;
+    border-radius: 3px;
+  }
+  
+  .recorder-devtools-endpoints::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 3px;
+  }
+  
+  .recorder-devtools-endpoints::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+  }
+  
+  @media (max-width: 640px) {
+    .recorder-devtools {
+      bottom: 0;
+      right: 0;
+      left: 0;
+      max-width: 100%;
+      border-radius: 0.5rem 0.5rem 0 0;
+    }
+  }
