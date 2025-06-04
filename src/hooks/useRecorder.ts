@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { interceptor, requestManager, type RecorderMode } from "../api/request-recorder/setup";
+import { storage } from "../api/request-recorder/requestRecordingManager";
 
 interface UseRecorderReturn {
     mode: RecorderMode;
@@ -30,13 +31,13 @@ export const useRecorder = (): UseRecorderReturn => {
     };
   
     const save = () => {
-      requestManager.saveToLocalStorage();
+      requestManager.saveToStorage();
       setRecordingCount(interceptor.getRequestRecorder().getRequests().size);
     };
   
     const clear = () => {
       interceptor.getRequestRecorder().getRequests().clear();
-      localStorage.removeItem("api-recordings");
+      storage.clear();
       setRecordingCount(0);
       setMode("real");
     };

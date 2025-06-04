@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./RecordManager.css";
-import { useRecorder } from "../../hooks/userRecorder";
+import { useRecorder } from "../../hooks/useRecorder";
 
 export const RecordManager = () => {
     const {
@@ -14,10 +14,23 @@ export const RecordManager = () => {
         exportRecordings,
         importRecordings,
         getEndpoints,
-
     } = useRecorder();
-    const [isMinimized, setIsMinimized] = useState(false);
+
     const [showEndpoints, setShowEndpoints] = useState(false);
+    const [isMinimized, setIsMinimized] = useState(false);
+    const [loading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        setIsLoading(true);
+        const stored = localStorage.getItem("recorderIsMinimized");
+        setIsMinimized(stored === "true");
+        setIsLoading(false)
+    }, []);
+
+    const handleSetIsMinimized = (val: boolean) => {
+        setIsMinimized(val);
+        localStorage.setItem("recorderIsMinimized", String(val));
+    };
 
     const handleFileImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -30,11 +43,15 @@ export const RecordManager = () => {
     if (isMinimized) {
         return (
             <div className="recorder-devtools-minimized">
-                <button onClick={() => setIsMinimized(false)}>
+                <button onClick={() => handleSetIsMinimized(false)}>
                     ::{mode}::
                 </button>
             </div>
         );
+    }
+
+    if (loading) {
+        return <></>;
     }
 
 
@@ -43,7 +60,7 @@ export const RecordManager = () => {
             <div className="recorder-devtools-header">
                 <h3 className="recorder-devtools-title">API Recorder</h3>
                 <button
-                    onClick={() => setIsMinimized(true)}
+                    onClick={() => handleSetIsMinimized(true)}
                     className="recorder-devtools-minimize"
                 >
                     _

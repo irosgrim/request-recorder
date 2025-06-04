@@ -1,16 +1,13 @@
 import type { RequestRecorder, RequestRecording } from "./requestRecorder";
+import IndexedDb from "./storage";
 
 interface RecordingData {
     recordings: Array<RequestRecording & { key: string }>;
     exportDate?: string;
   }
 
-interface CleanupOptions {
-    removeDuplicates?: boolean;
-    maxAge?: number;
-    keepLatest?: boolean;
-}
-  
+export const storage =  new IndexedDb("api-recordings", 1, "recordings");
+
 export class RequestRecordingManager {
     private recorder: RequestRecorder;
     private storageKey = "api-recordings";
@@ -19,29 +16,22 @@ export class RequestRecordingManager {
         this.recorder = recorder;
     }
   
-    saveToLocalStorage(): void {
-      const data: RecordingData = {
-        recordings: Array.from(this.recorder.getRequests().entries()).map(([key, recording]) => ({
-          key,
-          ...recording
-        }))
-      };
-      
-      localStorage.setItem(this.storageKey, JSON.stringify(data));
+    saveToStorage(): void {
+      const data = Array.from(this.recorder.getRequests().entries());
+      storage.set(data);
     }
   
-    loadFromLocalStorage(): void {
-        const stored = localStorage.getItem(this.storageKey);
+    async loadFromStorage() {
+        const stored = await storage.getAll<RequestRecording>();
         if (!stored) return;
         
         try {
-        const data: RecordingData = JSON.parse(stored);
-        data.recordings.forEach(recording => {
-            const { key, ...recordingData } = recording;
-            this.recorder.getRequests().set(key, recordingData as RequestRecording);
+        stored.forEach(recording => {
+            const [key, requestRecording ] = recording;
+            this.recorder.getRequests().set(key, requestRecording);
         });
         } catch (error) {
-        console.error("Failed to load request recordings", error);
+            console.error("Failed to load request recordings", error);
         }
     }
   
@@ -94,41 +84,5 @@ export class RequestRecordingManager {
         });
         
         return grouped;
-    }
-  
-    cleanup(options: CleanupOptions = {}): number {
-        const { 
-            removeDuplicates = true, 
-            maxAge = 7 * 24 * 60 * 60 * 1000,
-            keepLatest = true 
-        } = options;
-        
-        const now = Date.now();
-        const toDelete: string[] = [];
-        
-        const groups = new Map<string, Array<{ key: string; recording: RequestRecording }>>();
-        this.recorder.getRequests().forEach((recording, key) => {
-            const signature = `${recording.request.method}-${recording.request.pathname}`;
-            if (!groups.has(signature)) {
-            groups.set(signature, []);
-            }
-            groups.get(signature)!.push({ key, recording });
-        });
-        
-        groups.forEach((group) => {
-            group.sort((a, b) => b.recording.metadata.timestamp - a.recording.metadata.timestamp);
-            
-            group.forEach((item, index) => {
-            if (now - item.recording.metadata.timestamp > maxAge) {
-                toDelete.push(item.key);
-            } else if (removeDuplicates && index > 0 && keepLatest) {
-                toDelete.push(item.key);
-            }
-            });
-        });
-        
-        toDelete.forEach(key => this.recorder.getRequests().delete(key));
-        
-        return toDelete.length;
     }
   }

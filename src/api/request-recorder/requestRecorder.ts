@@ -18,14 +18,29 @@ export interface RequestRecording {
     metadata: {
         timestamp: number;
         duration: number;
-        key: string;
+        // key: string;
     };
+};
+
+const deepSortObject = (value: any): any => {
+    if (Array.isArray(value)) {
+        return value.map(deepSortObject);
+    } else if (value && typeof value === "object" && value.constructor === Object) {
+        return Object.keys(value)
+        .sort()
+        .reduce((acc, key) => {
+            acc[key] = deepSortObject(value[key]);
+            return acc;
+        }, {} as any);
+    }
+    return value;
 };
 
 export class RequestRecorder {
     private requests = new Map<string, RequestRecording>();
     mode: "record" | "fake" | "real" = "record";
-    generateRequestKey (url: string, options: RequestInit = {}) {
+
+    generateRequestKey(url: string, options: RequestInit = {}) {
         const urlObj = new URL(url, window.location.origin);
         const method = options.method ?? "GET";
         const pathname = urlObj.pathname;
@@ -36,16 +51,19 @@ export class RequestRecorder {
             method,
             pathname,
             query,
-            body
+            body,
         };
 
-        return JSON.stringify(keyObj, Object.keys(keyObj).sort());
+        return JSON.stringify(deepSortObject(keyObj));
     };
 
     async recordRequest(url: string, options: RequestInit = {}, response: Response, responseDuration = 0): Promise<RequestRecording> {
         const requestKey = this.generateRequestKey(url, options);
         const urlObj = new URL(url, window.location.origin);
-        const body = await response.clone().json().catch(() => response.clone().text());
+        const body = await response
+            .clone()
+            .json()
+            .catch(() => response.clone().text());
 
         const recording: RequestRecording = {
             request: {
@@ -58,13 +76,13 @@ export class RequestRecorder {
             response: {
                 status: response.status,
                 statusText: response.statusText,
-                body
+                body,
             },
             metadata: {
                 timestamp: Date.now(),
                 duration: responseDuration,
-                key: requestKey,
-            }
+                // key: requestKey,
+            },
         }
 
         this.requests.set(requestKey, recording);
@@ -72,7 +90,7 @@ export class RequestRecorder {
         return recording;
     };
 
-    parseBody(body: BodyInit |null): any {
+    parseBody(body: BodyInit | null): any {
         if (!body) return null;
 
         if (typeof body === "string") {
