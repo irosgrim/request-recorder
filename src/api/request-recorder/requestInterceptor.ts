@@ -33,6 +33,7 @@ export class RequestInterceptor {
                     const recording = this.requestRecorder.findRequest(url, options);
                     const shouldPassThrough = recording?.metadata.passThrough;
                     if (shouldPassThrough) {
+                        console.log("[PASS-THROUGH] Skipping recording for:", requestDetails);
                         return this.originalFetch(input, init);
                     }
                     if (recording && !shouldPassThrough) {
