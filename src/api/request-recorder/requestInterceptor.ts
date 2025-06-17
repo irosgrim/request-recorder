@@ -31,13 +31,17 @@ export class RequestInterceptor {
 
                 case "fake":
                     const recording = this.requestRecorder.findRequest(url, options);
-                    if (recording) {
+                    const shouldPassThrough = recording?.metadata.passThrough;
+                    if (shouldPassThrough) {
+                        return this.originalFetch(input, init);
+                    }
+                    if (recording && !shouldPassThrough) {
                         console.log("[FAKE] response for:", requestDetails);
                         const delay = recording.metadata.duration || 200;
                         await new Promise((resolve) => setTimeout(resolve, delay));
-                        return new Response(JSON.stringify(recording.response.body), {
-                            status: recording.response.status,
-                            statusText: recording.response.statusText,
+                        return new Response(JSON.stringify(recording.response!.body), {
+                            status: recording.response!.status,
+                            statusText: recording.response!.statusText,
                         });
                     } else {
                         console.warn("[FAKE] no request found for:", requestDetails);
@@ -50,6 +54,11 @@ export class RequestInterceptor {
                         const duration = Date.now() - startTime;
                         const recording = await this.requestRecorder.recordRequest(url, options, response);
                         recording.metadata.duration = duration;
+                        const shouldPassThrough = recording.metadata.passThrough;
+                        if (shouldPassThrough) {
+                            console.log("[PASS-THROUGH] Skipping recording for:", requestDetails);
+                            return this.originalFetch(url, options);
+                        }
                         console.log("[FAKE] Recorded: ", requestDetails);
                         return response;
                     } catch (error) {

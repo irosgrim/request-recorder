@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { interceptor, requestManager, type RecorderMode } from "../api/request-recorder/setup";
 import { storage } from "../api/request-recorder/requestRecordingManager";
+import type { RequestRecording } from "../api/request-recorder/requestRecorder";
 
 interface UseRecorderReturn {
     mode: RecorderMode;
+    recordings: Map<string, RequestRecording>;
     recordingCount: number;
     isRecording: boolean;
     isReal: boolean;
@@ -14,6 +16,7 @@ interface UseRecorderReturn {
     exportRecordings: () => void;
     importRecordings: (file: File) => Promise<void>;
     getEndpoints: () => string[];
+    togglePassThrough: (reqKey: string) => boolean;
 }
   
 export const useRecorder = (): UseRecorderReturn => {
@@ -55,9 +58,17 @@ export const useRecorder = (): UseRecorderReturn => {
       const grouped = requestManager.getRecordingsByEndpoint();
       return Object.keys(grouped);
     };
+
+    const togglePassThrough = (reqKey: string) => {
+      const requestRecorder = interceptor.getRequestRecorder();
+      const toggle = requestRecorder.togglePassThrough(reqKey);
+      requestManager.saveToStorage();
+      return toggle;
+    };
   
     return {
       mode,
+      recordings: interceptor.getRequestRecorder().getRequests(),
       recordingCount: interceptor.getRequestRecorder().getRequests().size,
       isRecording: mode === "record",
       isReal: mode === "real",
@@ -67,6 +78,7 @@ export const useRecorder = (): UseRecorderReturn => {
       clear,
       exportRecordings,
       importRecordings,
-      getEndpoints
+      getEndpoints,
+      togglePassThrough,
     };
   };

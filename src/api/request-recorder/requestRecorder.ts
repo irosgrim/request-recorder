@@ -14,11 +14,11 @@ export interface ResponseDetails {
   
 export interface RequestRecording {
     request: RequestDetails;
-    response: ResponseDetails;
+    response: ResponseDetails | null;
     metadata: {
         timestamp: number;
         duration: number;
-        // key: string;
+        passThrough: boolean;
     };
 };
 
@@ -60,6 +60,9 @@ export class RequestRecorder {
     async recordRequest(url: string, options: RequestInit = {}, response: Response, responseDuration = 0): Promise<RequestRecording> {
         const requestKey = this.generateRequestKey(url, options);
         const urlObj = new URL(url, window.location.origin);
+        const existingRecording = this.requests.get(requestKey);
+        const shouldPassThrough = existingRecording?.metadata.passThrough ?? false;
+
         const body = await response
             .clone()
             .json()
@@ -81,6 +84,7 @@ export class RequestRecorder {
             metadata: {
                 timestamp: Date.now(),
                 duration: responseDuration,
+                passThrough: shouldPassThrough,
                 // key: requestKey,
             },
         }
@@ -89,6 +93,18 @@ export class RequestRecorder {
 
         return recording;
     };
+
+    togglePassThrough(requestKey: string): boolean {
+        const recording = this.requests.get(requestKey);
+        if (recording) {
+            const newPassThroughState = !recording.metadata.passThrough;
+            recording.metadata.passThrough = newPassThroughState;
+            
+            return newPassThroughState;
+        }
+
+        return false;
+    }
 
     parseBody(body: BodyInit | null): any {
         if (!body) return null;
@@ -112,5 +128,9 @@ export class RequestRecorder {
 
     getRequests() {
         return this.requests;
+    }
+
+    getRequest(key: string) {
+        return this.requests.get(key);
     }
 };

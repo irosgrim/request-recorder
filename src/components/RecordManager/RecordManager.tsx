@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import "./RecordManager.css";
 import { useRecorder } from "../../hooks/useRecorder";
+import { EndpointInfo } from "./EndpointInfo";
 
 export const RecordManager = () => {
     const {
         mode,
+        recordings,
         recordingCount,
         isRecording,
         isFake,
@@ -53,7 +55,6 @@ export const RecordManager = () => {
     if (loading) {
         return <></>;
     }
-
 
     return (
         <div className="recorder-devtools">
@@ -144,14 +145,13 @@ export const RecordManager = () => {
                     {showEndpoints ? "Hide" : "Show"} recorded requests ({getEndpoints().length})
                 </button>
 
+
                 {showEndpoints && (
-                    <ul className="recorder-devtools-endpoints">
-                        {getEndpoints().map((endpoint, i) => (
-                            <li key={i} className="recorder-devtools-endpoint">
-                                {endpoint}
-                            </li>
+                    <div className="recorder-devtools-endpoints">
+                        {Array.from(recordings.entries()).map(([requestKey, recording]) => (
+                            <EndpointInfo requestKey={requestKey} recording={recording} key={requestKey} />
                         ))}
-                    </ul>
+                    </div>
                 )}
             </div>
         </div>

@@ -190,21 +190,11 @@
   }
   
   .recorder-devtools-endpoints {
-    max-height: 8rem;
+    max-height: 400px;
     overflow-y: auto;
-    background-color: #374151;
-    padding: 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.75rem;
-  }
-  
-  .recorder-devtools-endpoint {
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 0.125rem 0;
-    color: #e5e7eb;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 0.5rem;
   }
   
   .recorder-devtools-endpoints::-webkit-scrollbar {
@@ -224,13 +214,152 @@
   .recorder-devtools-endpoints::-webkit-scrollbar-thumb:hover {
     background: #6b7280;
   }
-  
-  @media (max-width: 640px) {
-    .recorder-devtools {
-      bottom: 0;
-      right: 0;
-      left: 0;
-      max-width: 100%;
-      border-radius: 0.5rem 0.5rem 0 0;
-    }
+
+.recorder-devtools-endpoint {
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0.125rem 0;
+  color: #e5e7eb;
+  border-bottom: 1px solid rgba(248, 249, 250, 0.118);
+}
+
+.recorder-devtools-endpoint:last-child {
+  border-bottom: none;
+}
+
+.passthrough-enabled {
+  background-color: #ffca76;
+  border-left: 4px solid #ff9800;
+}
+
+.passthrough-enabled:hover {
+  background-color: #ffeaa7;
+}
+
+.passthrough-enabled .path, .passthrough-enabled .schema {
+  color: #495057;
+}
+
+.recording-info {
+  flex: 1;
+  margin-right: 8px;
+}
+
+.recording-endpoint {
+  font-weight: bold;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.method {
+  background-color: #007bff;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  min-width: 35px;
+  text-align: center;
+}
+
+.method.GET { background-color: #28a745; }
+.method.POST { background-color: #007bff; }
+.method.PUT { background-color: #ffc107; color: #000; }
+.method.DELETE { background-color: #dc3545; }
+.method.PATCH { background-color: #6f42c1; }
+
+.path {
+  font-size: 12px;
+  color: #ffffff;
+  text-overflow: ellipsis;
+  width: 100%;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.path:not(:hover) {
+  text-overflow: ellipsis;
+}
+
+.path:hover span, .path:focus span {
+    display: inline-block;
+    animation: scroll-text 5s ease 0s 2 normal;
+}
+
+@keyframes scroll-text {
+  0% {
+    transform: translateX(0%);
   }
+  90% {
+    transform: translateX(-70%);
+  }
+  95% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.recording-meta {
+  font-size: 0.75rem;
+  color: #888888;
+  margin-top: 4px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.passthrough-toggle {
+  font-size: 11px;
+  padding: 6px 10px;
+  min-width: 110px;
+  white-space: nowrap;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: fit-content;
+}
+
+.passthrough-toggle:hover {
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+}
+
+.active-passthrough {
+  background-color: #ff9800;
+  color: white;
+  border-color: #ff9800;
+}
+
+.active-passthrough:hover {
+  background-color: #f57c00;
+  border-color: #f57c00;
+}
+
+.recorder-devtools-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding: 4px 0;
+}
+
+.recorder-devtools-label {
+  font-weight: bold;
+  color: #939aa2;
+  font-size: 0.75rem;
+}
+
+.transparent {
+  background-color: transparent;
+}
