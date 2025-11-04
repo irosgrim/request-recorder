@@ -238,7 +238,7 @@
   background-color: #ffeaa7;
 }
 
-.passthrough-enabled .path, .passthrough-enabled .schema {
+.passthrough-enabled .path, .passthrough-enabled .schema, .passthrough-enabled .edit {
   color: #495057;
 }
 

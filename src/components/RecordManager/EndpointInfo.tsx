@@ -3,6 +3,7 @@ import type { RequestRecording } from "../../api/request-recorder/requestRecorde
 import { useRecorder } from "../../hooks/useRecorder";
 import { SchemaExtractor } from "../../utils/schemaExtractor";
 import "./SchemaTree.css";
+import { EditRecording } from "./EditRecording";
 
 const SchemaTree = ({ schema, level = 0 }: { schema: any; level?: number }) => {
     const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
@@ -125,6 +126,7 @@ export const EndpointInfo = ({ requestKey, recording }: { requestKey: string; re
         togglePassThrough,
     } = useRecorder();
     const [showResponseSchema, setShowResponseSchema] = useState<any | null>(null);
+    const [showEdit, setShowEdit] = useState(false);
 
     const handleTogglePassThrough = (requestKey: string) => {
         const toggle = togglePassThrough(requestKey);
@@ -132,6 +134,7 @@ export const EndpointInfo = ({ requestKey, recording }: { requestKey: string; re
     }
 
     const showSchema = (obj: any) => {
+        setShowEdit(false);
         if (showResponseSchema) {
             setShowResponseSchema(null);
             return;
@@ -140,6 +143,11 @@ export const EndpointInfo = ({ requestKey, recording }: { requestKey: string; re
         const s = SchemaExtractor.toJSONSchema(obj);
         setShowResponseSchema(s);
     }
+
+    const handleEdit = () => {
+        setShowEdit(!showEdit);
+        setShowResponseSchema(null);
+    };
 
     return (
         <div
@@ -170,7 +178,8 @@ export const EndpointInfo = ({ requestKey, recording }: { requestKey: string; re
 
                     <div className="recording-meta">
                         <div>
-                            <button className="transparent schema" onClick={() => showSchema(recording.response?.body)}>{showResponseSchema ? "hide" : "show"} schema</button>
+                            <button className="transparent schema" onClick={() => showSchema(recording.response?.body)}>{showResponseSchema ? "Hide" : "Show"} schema</button>
+                            <button className="transparent edit" onClick={() => handleEdit()}>Edit request</button>
                         </div>
                     </div>
                 </div>
@@ -187,6 +196,9 @@ export const EndpointInfo = ({ requestKey, recording }: { requestKey: string; re
             <div>
                 {
                     showResponseSchema && <SchemaTree schema={showResponseSchema} />
+                }
+                {
+                    showEdit && <EditRecording recording={recording} />
                 }
             </div>
 
